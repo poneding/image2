@@ -1,0 +1,53 @@
+name: release
+
+on:
+  release:
+    types: [created]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Login to DockerHub
+        uses: docker/login-action@v1
+        with:
+          username: ${{ secrets.DOCKERHUB_USER }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Login to Aliyun Registry
+        uses: docker/login-action@v1
+        with:
+          registry: ${{ secrets.ALIYUN_REGISTRY_SERVER }}
+          username: ${{ secrets.ALIYUN_REGISTRY_USER }}
+          password: ${{ secrets.ALIYUN_REGISTRY_TOKEN }}
+
+      - name: Set ENV
+        run: |
+          FROM_IMAGE=${{ github.event.release.name }}
+          # IMAGE_NAME=`echo $FROM_IMAGE|sed 's/\//_/g'`
+          IMAGE_NAME=`basename $FROM_IMAGE`
+          echo "FROM_IMAGE=$FROM_IMAGE" >> $GITHUB_ENV
+          echo "TO_DOCKERHUB_IMAGE=${{ secrets.DOCKERHUB_USER }}/$IMAGE_NAME" >> $GITHUB_ENV
+          echo "TO_ALIYUN_REGISTRY_IMAGE=${{ secrets.ALIYUN_REGISTRY_SERVER }}/${{ secrets.ALIYUN_REGISTRY_NAMESPACE }}/$IMAGE_NAME" >> $GITHUB_ENV
+
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v1
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v1
+
+      - name: Build and push
+        uses: docker/build-push-action@v2
+        with:
+          platforms: |
+            linux/amd64
+            linux/arm64
+          build-args: |
+            FROM_IMAGE=${{ env.FROM_IMAGE }}
+          file: Dockerfile.bolierplate
+          push: true
+          tags: |
+            ${{ env.TO_DOCKERHUB_IMAGE }}
+            ${{ env.TO_ALIYUN_REGISTRY_IMAGE }}
