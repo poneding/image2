@@ -12,7 +12,7 @@ Dcoker 镜像工具：国外镜像转换；编译 Dockerfile
 3. 填写完整的外网镜像名称， 例如 `k8s.gcr.io/kube-apiserver:v1.24.0`。
 
 > 须知：最后编译出来的镜像地址只会保留镜像名称，不会保留域名或命名空间。  
-> 上例转换出来的镜像是 `pding/k8s.gcr.io_kube-apiserver:v1.24.0` 和 `registry.cn-zhangzhou.aliyuncs.com/pding/kube-apiserver:v1.24.0`。
+> 上例转换出来的镜像是 `poneding/k8s.gcr.io_kube-apiserver:v1.24.0` 和 `registry.cn-zhangzhou.aliyuncs.com/pding/kube-apiserver:v1.24.0`。
 
 ## 编译镜像
 
@@ -24,5 +24,5 @@ Dcoker 镜像工具：国外镜像转换；编译 Dockerfile
 
 须知：
 
-- 如果提交信息为 `alpine`，那么最后编译出来的镜像地址是 `pding/alpine` 和 `registry.cn-zhangzhou.aliyuncs.com/pding/alpine`；
+- 如果提交信息为 `alpine`，那么最后编译出来的镜像地址是 `poneding/alpine` 和 `registry.cn-zhangzhou.aliyuncs.com/pding/alpine`；
 - 提交信息可以附带tag，例如：`alpine:latest`。
